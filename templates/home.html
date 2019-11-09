@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block content %}
+{% comment %}  <div id="dropdown-component" class="tab-pane tab-example-result fade active show" role="tabpanel" aria-labelledby="dropdown-component-tab">
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  PROYECTOS
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 51px, 0px); top: 0px; left: 0px; will-change: transform;">
+                 {% for element in elementos %}
+                  <a class="dropdown-item" href="#">{{element}}</a>
+                  {% endfor %}
+                </div>
+              </div>
+
+            </div>{% endcomment %}
+
+<form action="{% url 'enviar' 0%}" method="post">
+   {% csrf_token %}
+
+   <div class="row align-items-center">
+{#            <label class="col-sm-2 col-form-label">Seleccionar Proyecto</label>#}
+{#            <div class="col-sm-3">#}
+{#                 <select id="selectbasic" name="project_select" class="form-control-alternative">#}
+{#                     <option selected>{{project_select}}</option>#}
+{#                     {% for element in elementos %}#}
+{#                         <option value="{{element | escape}}">{{element | escape}}</option>#}
+{#                      {% endfor %}#}
+{#                 </select>#}
+{#            </div>#}
+
+            <div class="col-sm-auto col-sm col-form-label">
+                <div class="form-check">
+                   <input class="form-check-input" type="checkbox" name="option1" id="grupo1" value="true">
+                   <label class="form-check-label">SPPS n1</label>
+                </div>
+            </div>
+            <div class="col-sm-auto col-sm col-form-label">
+                <div class="form-check">
+                   <input class="form-check-input" type="checkbox" name="option2" id="grupo2" value="true">
+                   <label class="form-check-label">B2B Fibra</label>
+                </div>
+            </div>
+            <div class="col-sm-auto col-sm col-form-label">
+                <div class="form-check">
+                   <input class="form-check-input" type="checkbox" name="option3" id="grupo3" value="true">
+                   <label class="form-check-label">Verticales</label>
+                </div>
+            </div>
+            <div class="col-sm-auto col-sm">
+                <div class="form-check">
+                   <input class="form-check-input" type="checkbox" id="all_opts" onclick='sel_all_groups()'>
+                   <label class="form-check-label">TODOS</label>
+                </div>
+            </div>
+   </div>
+
+   <div class="row input-daterange datepicker align-items-center">
+
+           <div class="col-sm-2 col-sm">
+                <div class="form-group focused">
+                    <div class="input-group input-group-alternative">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                        </div>
+                            <input class="form-control" placeholder="Fecha Inicio" type="text" name="date_start" autocomplete="off" value="{{ date_start }}">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-sm-auto col-sm">
+                <div class="input-group input-group-alternative">
+                    <select id="inputState" class="form-control" name="start_hour">
+                    <option selected>{{start_hour}}</option>
+                    <option value="00">0</option>
+                    <option value="01">1</option>
+                    <option value="02">2</option>
+                    <option value="03">3</option>
+                    <option value="04">4</option>
+                    <option value="05">5</option>
+                    <option value="06">6</option>
+                    <option value="07">7</option>
+                    <option value="08">8</option>
+                    <option value="09">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+
+                  </select>
+                </div>
+            </div>
+           <div class="form-group col-sm-auto col-sm">
+                <div class="input-group input-group-alternative">
+                    <select id="inputState" class="form-control" name="start_minute">
+                    <option selected>{{start_minute}}</option>
+                    <option value="00">00</option>
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                    <option value="45">45</option>
+
+                  </select>
+                </div>
+            </div>
+        <div class="col-sm-auto"></div>
+        <div class="col-sm-2 col-sm">
+            <div class="form-group focused">
+                <div class="input-group input-group-alternative">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                    </div>
+                        <input class="form-control" placeholder="Fecha Final" type="text" name="date_end" autocomplete="off" value="{{ date_end }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group col-sm-auto col-sm">
+            <div class="input-group input-group-alternative">
+                <select id="inputState" class="form-control" name="end_hour">
+                <option selected>{{end_hour}}</option>
+                <option value="00">0</option>
+                <option value="01">1</option>
+                <option value="02">2</option>
+                <option value="03">3</option>
+                <option value="04">4</option>
+                <option value="05">5</option>
+                <option value="06">6</option>
+                <option value="07">7</option>
+                <option value="08">8</option>
+                <option value="09">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+
+              </select>
+            </div>
+        </div>
+
+       <div class="form-group col-sm-auto col-sm">
+            <div class="input-group input-group-alternative">
+                <select id="inputState" class="form-control" name="end_minute">
+                <option selected>{{end_minute}}</option>
+                <option value="00">00</option>
+                <option value="15">15</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
+
+              </select>
+            </div>
+        </div>
+       <div class="form-group col-sm-auto col-sm">
+            <button type="submit" class="btn btn-success">Enviar</button>
+       </div>
+
+    </div>
+
+
+</form>
+
+<script>
+     function sel_all_groups(){
+         if(document.getElementById("all_opts").checked) {
+             document.getElementById("grupo1").checked = true;
+             document.getElementById("grupo2").checked = true;
+             document.getElementById("grupo3").checked = true;
+         }
+         else{
+             document.getElementById("grupo1").checked = false;
+             document.getElementById("grupo2").checked = false;
+             document.getElementById("grupo3").checked = false;
+         }
+
+    }
+
+    document.getElementById("grupo1").checked={{option1}};
+    document.getElementById("grupo2").checked={{option2}};
+    document.getElementById("grupo3").checked={{option3}};
+
+
+
+
+</script>
+{##}
+{#<!-- Button -->#}
+{#<div class="form-group">#}
+{#  <label class="col-md-4 control-label" for="singlebutton">Single Button</label>#}
+{#  <div class="col-md-4">#}
+{#    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Button</button>#}
+{#  </div>#}
+{#</div>#}
+
+
+
+<div class="row-grid">
+   {% for title,table in tables_dict.items %}
+    <div class="row">
+        <div class="col-sm">
+        <h3 ><a href="{% url 'enviar' forloop.counter%}" class="app-color" title="Descargar {{title}} a Excel"><i class="ni ni-app"></i> {{title}}</a></h3>
+        {{ table|safe }}
+        </div>
+    </div>
+
+    {% endfor %}
+
+
+</div>
+
+{% endblock %}
+
+{##}
+{#<form action="add_todo/" method="post" class="form-inline">#}
+{#		  <input type="text" required name="content" class="form-control mb-2 mr-sm-2" placeholder="type here...">#}
+{#      <button type="submit" class="btn btn-primary mb-2">Submit</button>#}
+{#    </form>#}
+{##}
+{#<form method="post">#}
+{#    {% csrf_token %}#}
+{#    <div class="form-group">#}
+{#      <label for="id_subject">Subject</label>#}
+{#      <input type="text" class="form-control" id="id_subject" name="subject">#}
+{#    </div>#}
+{#    <div class="form-group">#}
+{#      <label for="id_message">Message</label>#}
+{#      <textarea class="form-control" id="id_message" name="message" rows="5"></textarea>#}
+{#    </div>#}
+{#    <button type="submit" class="btn btn-success">Post</button>#}
+{#  </form>#}

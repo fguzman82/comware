@@ -1,0 +1,43 @@
+
+table.dataframe, .dataframe td, .dataframe th{
+  border-color: #d2c9cb;
+  border-bottom: 1px solid #979881;
+  border-collapse: collapse;
+  text-align:center;
+  padding: 5px;
+  margin-bottom: 40px;
+  font-size: 0.95em;
+  width: 115%;
+}
+
+.dataframe tr:nth-child(odd)		{ background-color:#eee; }
+.dataframe tr:nth-child(even)	{ background-color:#fff; }
+
+.dataframe tr:hover            { background-color: #ffff99;cursor: pointer;}
+
+.format1 thead th{
+    background-color: #274b56;
+    color: white;
+}
+
+.format2 thead th{
+    background-color: #2f562f;
+    color: white;
+}
+
+.format3 thead th{
+    background-color: #796d42;
+    color: white;
+}
+
+.up-color{
+    color: darkgreen;
+}
+
+.down-color{
+    color: darkred;
+}
+
+.app-color{
+    color: #29477b;
+}
