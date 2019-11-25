@@ -12,21 +12,21 @@ table.dataframe, .dataframe td, .dataframe th{
 
 .dataframe tr:nth-child(odd)		{ background-color:#eee; }
 .dataframe tr:nth-child(even)	{ background-color:#fff; }
-
-.dataframe tr:hover            { background-color: #ffff99;cursor: pointer;}
+.dataframe tr:nth-child(1)	{ background-color:#9ec3e8; color: #172b4d; font-weight: 600;}
+.dataframe tr:hover            { background-color: #ffff99; cursor: pointer;}
 
 .format1 thead th{
-    background-color: #274b56;
+    background-color: #274b56bd;
     color: white;
 }
 
 .format2 thead th{
-    background-color: #2f562f;
+    background-color: #2f562fbd;
     color: white;
 }
 
 .format3 thead th{
-    background-color: #796d42;
+    background-color: #796d42ea;
     color: white;
 }
 

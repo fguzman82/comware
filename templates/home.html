@@ -36,7 +36,7 @@
             <div class="col-sm-auto col-sm col-form-label">
                 <div class="form-check">
                    <input class="form-check-input" type="checkbox" name="option1" id="grupo1" value="true">
-                   <label class="form-check-label">SPPS n1</label>
+                   <label class="form-check-label">STTS n1</label>
                 </div>
             </div>
             <div class="col-sm-auto col-sm col-form-label">
@@ -61,7 +61,7 @@
 
    <div class="row input-daterange datepicker align-items-center">
 
-           <div class="col-sm-2 col-sm">
+           <!--<div class="col-sm-2 col-sm">
                 <div class="form-group focused">
                     <div class="input-group input-group-alternative">
                         <div class="input-group-prepend">
@@ -70,8 +70,9 @@
                             <input class="form-control" placeholder="Fecha Inicio" type="text" name="date_start" autocomplete="off" value="{{ date_start }}">
                     </div>
                 </div>
-            </div>
-            <div class="form-group col-sm-auto col-sm">
+            </div>-->
+
+           <!-- <div class="form-group col-sm-auto col-sm">
                 <div class="input-group input-group-alternative">
                     <select id="inputState" class="form-control" name="start_hour">
                     <option selected>{{start_hour}}</option>
@@ -102,8 +103,8 @@
 
                   </select>
                 </div>
-            </div>
-           <div class="form-group col-sm-auto col-sm">
+            </div>-->
+           <!--<div class="form-group col-sm-auto col-sm">
                 <div class="input-group input-group-alternative">
                     <select id="inputState" class="form-control" name="start_minute">
                     <option selected>{{start_minute}}</option>
@@ -114,8 +115,8 @@
 
                   </select>
                 </div>
-            </div>
-        <div class="col-sm-auto"></div>
+            </div>-->
+        <!--<div class="col-sm-auto"></div>
         <div class="col-sm-2 col-sm">
             <div class="form-group focused">
                 <div class="input-group input-group-alternative">
@@ -125,7 +126,7 @@
                         <input class="form-control" placeholder="Fecha Final" type="text" name="date_end" autocomplete="off" value="{{ date_end }}">
                 </div>
             </div>
-        </div>
+        </div>-->
 
         <div class="form-group col-sm-auto col-sm">
             <div class="input-group input-group-alternative">
@@ -204,6 +205,12 @@
 
 
 </script>
+
+<script type="text/javascript">
+    setInterval(function() {
+                  window.location.reload();
+                }, 300000);
+</script>
 {##}
 {#<!-- Button -->#}
 {#<div class="form-group">#}
@@ -214,12 +221,20 @@
 {#</div>#}
 
 
+<div class="row-grid">
+   <div class="row">
+        <div class="col-sm">
+            <h3 >Corte de Línea: {{date_cutting}}</h3>
+        </div>
+    </div>
+</div>
+
 
 <div class="row-grid">
    {% for title,table in tables_dict.items %}
     <div class="row">
         <div class="col-sm">
-        <h3 ><a href="{% url 'enviar' forloop.counter%}" class="app-color" title="Descargar {{title}} a Excel"><i class="ni ni-app"></i> {{title}}</a></h3>
+        <h3 ><a href="{% url 'enviar' title%}" class="app-color" title="Descargar {{title}} a Excel"><i class="ni ni-app"></i> {{title}}</a></h3>
         {{ table|safe }}
         </div>
     </div>

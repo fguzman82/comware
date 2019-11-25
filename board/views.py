@@ -28,9 +28,9 @@ class UserUpdateView(UpdateView):
 
 
 def read_table(filename, enconding='iso8859'):
-    df = pd.read_csv(filename, sep='\t', encoding=enconding, decimal=',')
+    df = pd.read_csv(filename, sep='\t', encoding=enconding, decimal='.')
     df.drop([0], axis=0, inplace=True)  ##se borra la fila 0
-    time_index = pd.to_datetime(df['Fecha'] + ' ' + df['Intervalo inicial'], format='%d/%m/%Y %H:%M')
+    time_index = pd.to_datetime(df['Fecha'] + ' ' + df['Intervalo inicial'], format='%m/%d/%Y %I:%M %p')
     # time_index=time_index.dt.strftime('%d-%m-%Y %H:%M') ##se formatea a este orden
     df.index = time_index  ##se asigna el indice usando la col 'Fecha' e 'Intervalo inicial' al formato YYYY-DD-MM HH:MM
     df.drop(['Fecha', 'Intervalo inicial'], axis=1, inplace=True)  ##se borra la columna fecha e intervalo inicial
@@ -79,6 +79,7 @@ def generate_table(df, group, time_start, time_end):
          project in group]).sum(axis=1)
     llam_atend_x_vel_prom = np.array([(((df[df['PROYECTO'] == project]['Llamadas Atendidas'][time_start:time_end]) * (
         df[df['PROYECTO'] == project]['Vel. prom. de resp.'][time_start:time_end])).sum()) for project in group])
+
     abandonadas_despues_umbral = np.array(
         [(df[df['PROYECTO'] == project][['Aban Calls 21 - 30 sec.', 'Aban Calls 31 -60 sec.', 'Aban Calls > 60 sec.']][
           time_start:time_end].sum()) for project in group]).sum(axis=1)
@@ -99,12 +100,32 @@ def generate_table(df, group, time_start, time_end):
     table['Total Abandonadas'] = table['Abandono']
     table['Abandonadas después de Umbral'] = abandonadas_despues_umbral
     table['%Nivel de abandono'] = abandonadas_despues_umbral * 100 / llamadas_ofrecidas
+
+    table.loc['TOTAL', 'Ofrecidas'] = llamadas_ofrecidas.sum()
+    table.loc['TOTAL', 'Atendidas'] = llamadas_atendidas.sum()
+    table.loc['TOTAL', 'Umbral'] = llamadas_umbral.sum()
+    table.loc['TOTAL', 'Abandono'] = (llamadas_ofrecidas - llamadas_atendidas).sum()
+    table.loc['TOTAL', '%Abandono'] = table.loc['TOTAL', 'Abandono'] * 100 / table.loc['TOTAL', 'Ofrecidas']
+    table.loc['TOTAL', 'AHT'] = sum_tiempo.sum() / table.loc['TOTAL', 'Atendidas']
+    table.loc['TOTAL', 'ASA'] = llam_atend_x_vel_prom.sum() / table.loc['TOTAL', 'Atendidas']
+    table.loc['TOTAL', '%Atención'] = table.loc['TOTAL', 'Atendidas'] * 100 / table.loc['TOTAL', 'Ofrecidas']
+    table.loc['TOTAL', '%Servicio'] = table.loc['TOTAL', 'Umbral'] * 100 / table.loc['TOTAL', 'Ofrecidas']
+    table.loc['TOTAL', '%Anterior'] = llamadas_umbral_anterior.sum() * 100 / llamadas_ofrecidas_anterior.sum()
+    table.loc['TOTAL', 'D'] = table.loc['TOTAL', '%Servicio'] - table.loc['TOTAL', '%Anterior']
+    table.loc['TOTAL', 'D'] = 'up' if table.loc['TOTAL', 'D'] >= 0 else 'down'
+    table.loc['TOTAL', 'Total Abandonadas'] = table.loc['TOTAL', 'Abandono']
+    table.loc['TOTAL', 'Abandonadas después de Umbral'] = abandonadas_despues_umbral.sum()
+    table.loc['TOTAL', '%Nivel de abandono'] = table.loc['TOTAL', 'Abandonadas después de Umbral'] * 100 / table.loc['TOTAL', 'Ofrecidas']
+
     table = table.round(1)
     table['%Abandono'] = table['%Abandono'].astype(str) + '%'
     table['%Atención'] = table['%Atención'].astype(str) + '%'
     table['%Servicio'] = table['%Servicio'].astype(str) + '%'
     table['%Anterior'] = table['%Anterior'].astype(str) + '%'
     table['%Nivel de abandono'] = table['%Nivel de abandono'].astype(str) + '%'
+
+    table = table.reindex(['TOTAL']+group)
+
     return table
 
 
@@ -121,7 +142,10 @@ def home(request):
     grupo3 = ['B2B N1 Bajos', 'B2B N1 Edatel Avanz', 'B2B N1 Edatel Basico', 'B2B N1 Medios Conect',
               'B2B N1 Medios Datace', 'B2B N1 Medios Voz', 'B2B N1 VIP']
 
-    df = read_table('repsep.txt')
+    df = read_table('tabla.txt')
+    global end_date
+    end_date = df.index[-1]
+
     current_date_year = timezone.now().date().year
     current_date_month = timezone.now().date().month
     current_date_day = timezone.now().date().day
@@ -132,9 +156,11 @@ def home(request):
     end_minute = 'Minuto Final'
     print('current date is:', (current_date))
 
-    table_g1 = generate_table(df, grupo1, df.index[0], df.index[-1])
-    table_g2 = generate_table(df, grupo2, df.index[0], df.index[-1])
+    table_g1 = generate_table(df, grupo2, df.index[0], df.index[-1])
+    table_g2 = generate_table(df, grupo1, df.index[0], df.index[-1])
     table_g3 = generate_table(df, grupo3, df.index[0], df.index[-1])
+
+    date_cutting=(df.index[-1] + pd.Timedelta(minutes=15)).__str__()
 
     table_g1_str = table_g1.to_html(classes='format1').replace('up', '<i class="ni ni-bold-up up-color"></i>').replace(
         'down', '<i class="ni ni-bold-down down-color"></i>')
@@ -143,11 +169,12 @@ def home(request):
     table_g3_str = table_g3.to_html(classes='format3').replace('up', '<i class="ni ni-bold-up up-color"></i>').replace(
         'down', '<i class="ni ni-bold-down down-color"></i>')
     tables = [table_g1_str, table_g2_str, table_g3_str]
-    titles = ['SPPS n1', 'B2B Fibra', 'Verticales']
+    titles = ['B2B Fibra', 'STTS n1', 'Verticales']
 
     return render(request, 'home.html',
                   dict(tables_dict=dict(zip(titles, tables)), start_hour=start_hour, start_minute=start_minute,
-                       end_hour=end_hour, end_minute=end_minute, option1='false', option2='false', option3='false'))
+                       end_hour=end_hour, end_minute=end_minute, option1='false', option2='false', option3='false',
+                       date_cutting=date_cutting))
 
 
 def enviar2(request, table_id):
@@ -161,28 +188,17 @@ def enviar(request, table_id):
     grupo3 = ['B2B N1 Bajos', 'B2B N1 Edatel Avanz', 'B2B N1 Edatel Basico', 'B2B N1 Medios Conect',
               'B2B N1 Medios Datace', 'B2B N1 Medios Voz', 'B2B N1 VIP']
 
-    df = read_table('repsep.txt')
-    print(table_id)
-    if table_id == 1:
-        excel_file = IO()
-        xlwriter = pd.ExcelWriter(excel_file, engine='xlsxwriter')
-        table_g1 = generate_table(df, grupo1, df.index[0], df.index[-1])
-        table_g1.to_excel(xlwriter, 'SPPS_n1')
-        xlwriter.save()
-        xlwriter.close()
-        excel_file.seek(0)
-        response = HttpResponse(excel_file.read(),
-                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = 'attachment; filename=Reporte_SPPS_n1.xlsx'
-        return response
+    df = read_table('tabla.txt')
+    global end_date
 
     if request.method == 'POST':
-        date_start = request.POST['date_start']
-        date_end = request.POST['date_end']
-        start_hour = request.POST['start_hour']
-        start_minute = request.POST['start_minute']
+        # date_start = request.POST['date_start']
+        # date_end = request.POST['date_end']
+        # start_hour = request.POST['start_hour']
+        # start_minute = request.POST['start_minute']
         end_hour = request.POST['end_hour']
         end_minute = request.POST['end_minute']
+
         try:
             option1 = request.POST['option1']
         except:
@@ -198,17 +214,27 @@ def enviar(request, table_id):
         except:
             option3 = 'false'
 
-        print('date start:', date_start)
-        print('date end:', date_end)
-        print('start hour:', start_hour)
-        print('start minute', start_minute)
+        # print('date start:', date_start)
+        # print('date end:', date_end)
+        # print('start hour:', start_hour)
+        # print('start minute', start_minute)
         print('end hour:', end_hour)
         print('end minute:', end_minute)
-        print('option1:', option1)
-        print('option2:', option2)
-        print('option3:', option3)
+        # print('option1:', option1)
+        # print('option2:', option2)
+        # print('option3:', option3)
 
+        if end_hour == 'Hora Final' or end_minute == 'Minuto Final':
+            end_date = df.index[-1]
+        else:
+            end_date = pd.to_datetime(df.index[0].date().__str__() + ' ' + str(end_hour) + ':' + str(end_minute))
+            end_date = end_date - pd.Timedelta(minutes=15)
+        if end_date > df.index[-1]:
+            end_date = df.index[-1]
 
+        date_cutting = (end_date + pd.Timedelta(minutes=15)).__str__()
+        end_hour = (end_date + pd.Timedelta(minutes=15)).time().hour
+        end_minute = (end_date + pd.Timedelta(minutes=15)).time().minute
         # table_g3 = generate_table(df, grupo3, df.index[0], df.index[-1])
         # table_g3 = generate_table(df, grupo1, pd.to_datetime('2019-09-01'), pd.to_datetime('2019-09-01'))
         # dfg1 = df[pandas_query(grupo1)]
@@ -219,15 +245,15 @@ def enviar(request, table_id):
         titles = []
 
         if option1 == 'true':
-            table_g1 = generate_table(df, grupo1, df.index[0], df.index[-1])
+            table_g1 = generate_table(df, grupo1, df.index[0], end_date)
             table_str = table_g1.to_html(classes='format1').replace('up',
                                                                     '<i class="ni ni-bold-up up-color"></i>').replace(
                 'down', '<i class="ni ni-bold-down down-color"></i>')
             tables.append(table_str)
-            titles.append('SPPS n1')
+            titles.append('STTS n1')
 
         if option2 == 'true':
-            table_g2 = generate_table(df, grupo2, df.index[0], df.index[-1])
+            table_g2 = generate_table(df, grupo2, df.index[0], end_date)
             table_str = table_g2.to_html(classes='format2').replace('up',
                                                                     '<i class="ni ni-bold-up up-color"></i>').replace(
                 'down', '<i class="ni ni-bold-down down-color"></i>')
@@ -235,7 +261,7 @@ def enviar(request, table_id):
             titles.append('B2B Fibra')
 
         if option3 == 'true':
-            table_g3 = generate_table(df, grupo3, df.index[0], df.index[-1])
+            table_g3 = generate_table(df, grupo3, df.index[0], end_date)
             table_str = table_g3.to_html(classes='format3').replace('up',
                                                                    '<i class="ni ni-bold-up up-color"></i>').replace(
             'down', '<i class="ni ni-bold-down down-color"></i>')
@@ -247,9 +273,51 @@ def enviar(request, table_id):
         # df['PROYECTO'][df.index[0]:(df.index[-1] - pd.Timedelta(minutes=15))]
 
         return render(request, 'home.html',
-                      dict(tables_dict=dict(zip(titles, tables)), start_hour=start_hour, start_minute=start_minute,
-                          end_hour=end_hour, end_minute=end_minute, date_start=date_start, date_end=date_end,
-                          option1=option1, option2=option2, option3=option3))
+                      dict(tables_dict=dict(zip(titles, tables)), end_hour=end_hour, end_minute=end_minute,
+                          option1=option1, option2=option2, option3=option3, date_cutting=date_cutting))
 
     else:
+
+        print(table_id)
+        if table_id == 'STTS n1':
+            excel_file = IO()
+            xlwriter = pd.ExcelWriter(excel_file, engine='xlsxwriter')
+            table_g1 = generate_table(df, grupo1, df.index[0], end_date)
+            table_g1.to_excel(xlwriter, 'STTS_n1')
+            xlwriter.save()
+            xlwriter.close()
+            excel_file.seek(0)
+            response = HttpResponse(excel_file.read(),
+                                    content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename=Reporte_STTS_n1.xlsx'
+            return response
+
+        if table_id == 'B2B Fibra':
+            excel_file = IO()
+            xlwriter = pd.ExcelWriter(excel_file, engine='xlsxwriter')
+            table_g2 = generate_table(df, grupo2, df.index[0], end_date)
+            table_g2.to_excel(xlwriter, 'B2B_Fibra')
+            xlwriter.save()
+            xlwriter.close()
+            excel_file.seek(0)
+            response = HttpResponse(excel_file.read(),
+                                    content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename=Reporte_B2B_Fibra.xlsx'
+            return response
+
+        if table_id == 'Verticales':
+            excel_file = IO()
+            xlwriter = pd.ExcelWriter(excel_file, engine='xlsxwriter')
+            table_g3 = generate_table(df, grupo3, df.index[0], end_date)
+            table_g3.to_excel(xlwriter, 'Verticales')
+            xlwriter.save()
+            xlwriter.close()
+            excel_file.seek(0)
+            response = HttpResponse(excel_file.read(),
+                                    content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename=Verticales.xlsx'
+            return response
+
         return HttpResponseRedirect("/")
+
+
