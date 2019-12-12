@@ -277,7 +277,7 @@ def generate_dashboard(df, NS_hora, NA_hora, NS_gauge, NA_gauge, AHT, AHT_str, t
             y=llamadas_recibidas,
             text=llamadas_recibidas,
             textposition='top center',
-            name='Recibidas',
+            name='Ofrecidas',
             # marker_color='blue',
             marker=dict(
                 color='Blue',
@@ -406,7 +406,7 @@ def home(request):
     table_g3 = generate_table(df, grupo3, df.index[0], df.index[-1])
 
     date_cutting = (df.index[-1] + pd.Timedelta(minutes=15))
-    date_cutting = date_cutting.strftime("%e %b &nbsp %I:%M %p")
+    date_cutting = date_cutting.strftime("%e %b &nbsp <b>%I:%M %p</b>")
 
     tabla_stts_str = table_g1.to_html(classes='format1" id="tabla_stts')
     tabla_fibra_str = table_g2.to_html(classes='format1" id="tabla_fibra')
