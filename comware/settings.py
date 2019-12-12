@@ -26,8 +26,8 @@ SECRET_KEY = 'q2(5cshf@a1e5_y+%2u8@6k!ok8(-h#tpc)do$lmw&o=d6@6^k'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['3.18.103.148', 'fabioguzman.tk', 'reportesenlinea.tk']
-
+#ALLOWED_HOSTS = ['3.18.103.148', 'fabioguzman.tk', 'reportesenlinea.tk']
+ALLOWED_HOSTS = []
 
 # Application definition
 

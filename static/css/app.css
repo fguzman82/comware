@@ -1,13 +1,98 @@
 
+    body {
+
+        margin: 0;
+        font-family: Open Sans,sans-serif;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #525f7f;
+        text-align: left;
+        background-color: #dae6ec87;
+
+    }
+
+    main {
+
+        display: block; margin: 20px auto; text-align: center;
+
+    }
+
+    .h1, h1{
+        font-size: 1.625rem;
+    }
+
+    h1 sup {
+
+        font-size: 14px; margin-left: -20px; display: inline-block; line-height: 1;
+
+    }
+
+    h2 {
+
+        font-size: 22px; text-align: center; margin: -7px 0 80px 0; padding: 5px 5px 6px 5px; display: inline-block; line-height: 30px;
+        border-bottom: 1px solid #5a5243; border-top: 1px solid #5a5243;
+
+    }
+
+    .tabButton {
+
+        font-size: 15px; font-weight: bold; padding: 10px 60px; background: #9dc3e8; margin-bottom: 0px;
+
+    }
+
+    .tab {
+
+        padding: 3px; text-align: left; background: #255c94;
+
+    }
+
+    h3 {
+
+        font-size: 20px; font-weight: bold;
+
+    }
+
+    p {
+
+        font-size: 15px; margin-top: 10px;
+
+    }
+
+    @media screen and (min-width: 1000px) {
+
+        main {
+
+            width: 1100px;
+
+        }
+
+    }
+
+ .dropdown-menu {
+    min-width: 12rem;
+    color: #525f7f;
+    border: 0 solid rgba(0,0,0,.15);
+    border-radius: .4375rem;
+    box-shadow: 0 50px 100px rgba(50,50,93,.1),0 15px 35px rgba(50,50,93,.15),0 5px 15px rgba(0,0,0,.1);
+}
+
+.dropdown-menu .dropdown-item {
+    padding: .5rem 1rem;
+    font-size: .875rem
+}
+
+
 table.dataframe, .dataframe td, .dataframe th{
   border-color: #d2c9cb;
   border-bottom: 1px solid #979881;
   border-collapse: collapse;
   text-align:center;
-  padding: 5px;
-  margin-bottom: 40px;
-  font-size: 0.95em;
-  width: 115%;
+  padding: 4px;
+  margin-bottom: 20px;
+  font-size: 14.44px;
+  width: 100%;
+  margin: auto;
 }
 
 .dataframe tr:nth-child(odd)		{ background-color:#eee; }
@@ -16,28 +101,6 @@ table.dataframe, .dataframe td, .dataframe th{
 .dataframe tr:hover            { background-color: #ffff99; cursor: pointer;}
 
 .format1 thead th{
-    background-color: #274b56bd;
+    background-color: #245c94;
     color: white;
-}
-
-.format2 thead th{
-    background-color: #2f562fbd;
-    color: white;
-}
-
-.format3 thead th{
-    background-color: #796d42ea;
-    color: white;
-}
-
-.up-color{
-    color: darkgreen;
-}
-
-.down-color{
-    color: darkred;
-}
-
-.app-color{
-    color: #29477b;
 }

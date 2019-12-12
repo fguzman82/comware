@@ -3,23 +3,21 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{#    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">#}
     <title>{% block title %}Reportes en Línea TIGO {% endblock %}</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="{% static 'css/tabsy.css' %}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
       <!-- Icons -->
-    <link href="{% static 'css/nucleo.css'%}" rel="stylesheet">
-    <link href="{% static 'css/font-awesome.min.css'%}" rel="stylesheet">
-
-    <!-- Theme CSS -->
-    <link type="text/css" href="{% static 'css/argon-dashboard.min.css'%}" rel="stylesheet">
+{#    <link href="{% static 'css/nucleo.css'%}" rel="stylesheet">#}
+{#    <link href="{% static 'css/font-awesome.min.css'%}" rel="stylesheet">#}
 
     {% block stylesheet %}{% endblock %}
   </head>
   <body>
     {% block body %}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-default">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #245c94;">
       <div class="container">
         <a class="navbar-brand" href="{% url 'home' %}">Reportes en Línea - Métricas Telefónicas TIGO</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,25 +41,23 @@
               {% else %}
                 <form class="form-inline ml-auto">
                   <a href="{% url 'login' %}" class="btn btn-outline-secondary">Ingresar</a>
-                  <a href="{% url 'signup' %}" class="btn btn-primary ml-2">Registrarse</a>
+{#                  <a href="{% url 'signup' %}" class="btn btn-primary ml-2">Registrarse</a>#}
                 </form>
               {% endif %}
           </div>
       </div>
     </nav>
-    <div class="container">
+
+    <main>
       {% block content %}
       {% endblock %}
-    </div>
+    </main>
     {% endblock body %}  <!-- AND HERE -->
     <!-- Core -->
-    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <!-- Theme JS -->
-    <script src="{% static 'js/argon.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
-{#    <script src="{% static 'js/argon-dashboard.min.js' %}"></script>#}
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+{#    <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>#}
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    {% block javascript %}{% endblock %}
 
   </body>
 </html>

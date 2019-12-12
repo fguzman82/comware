@@ -3,7 +3,24 @@
 {% load static %}
 
 {% block stylesheet %}
-  <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+<style>
+body {
+  background-image: url({% static 'img/white-waves.png' %});
+}
+
+.logo {accounts.css
+  font-family: 'Peralta', cursive;
+}
+
+.logo a {
+  color: rgba(0,0,0,.9);
+}
+
+.logo a:hover,
+.logo a:active {
+  text-decoration: none;
+}
+</style>
 {% endblock %}
 
 {% block body %}

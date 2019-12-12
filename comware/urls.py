@@ -19,17 +19,6 @@ from board import views
 from django.conf.urls import url
 # from accounts import views as account_views
 from django.contrib.auth import views as auth_views
-import os
-import threading
-
-admin.site.site_header = 'Administración Reportes en Línea'
-
-def periodic_task():
-    os.system('script_multiskill.acsauto')
-    metricas_thread=threading.Timer(60*10, periodic_task)
-    metricas_thread.start()
-
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,6 +30,6 @@ urlpatterns = [
     path('settings/password/', auth_views.PasswordChangeView.as_view(template_name='password_change.html'), name='password_change'),
     path('settings/password/done', auth_views.PasswordChangeView.as_view(template_name='password_change_done.html'), name='password_change_done'),
     path('settings/account/', views.UserUpdateView.as_view(), name='my_account'),
+    path('ajax/get_response/', views.answer_me, name='get_response'),
 ]
 
-periodic_task()
