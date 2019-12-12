@@ -387,7 +387,7 @@ def home(request):
     grupo3 = ['B2B N1 Bajos', 'B2B N1 Edatel Avanz', 'B2B N1 Edatel Basico', 'B2B N1 Medios Conect',
               'B2B N1 Medios Datace', 'B2B N1 Medios Voz', 'B2B N1 VIP']
 
-    df = read_table('tabla.txt')
+    df = read_table('tabla_12am.txt')
     global end_date
     end_date = df.index[-1]
 
@@ -418,21 +418,21 @@ def home(request):
     servicio_stts = table_g1['%Servicio']['TOTAL']
     atencion_stts = table_g1['%Atención']['TOTAL']
     AHT_stts = table_g1['AHT']['TOTAL']
-    AHT_stts_str = str(datetime.timedelta(seconds=int(AHT_stts)))
+    AHT_stts_str = str(datetime.timedelta(seconds=int(0 if AHT_stts.__str__()=='nan' else AHT_stts)))
     NS_gauge_stts = float(servicio_stts[0:-1])
     NA_gauge_stts = float(atencion_stts[0:-1])
 
     servicio_fibra = table_g2['%Servicio']['TOTAL']
     atencion_fibra = table_g2['%Atención']['TOTAL']
     AHT_fibra = table_g2['AHT']['TOTAL']
-    AHT_fibra_str = str(datetime.timedelta(seconds=int(AHT_fibra)))
+    AHT_fibra_str = str(datetime.timedelta(seconds=int(0 if AHT_fibra.__str__()=='nan' else AHT_fibra)))
     NS_gauge_fibra = float(servicio_fibra[0:-1])
     NA_gauge_fibra = float(atencion_fibra[0:-1])
 
     servicio_verticales = table_g3['%Servicio']['TOTAL']
     atencion_verticales = table_g3['%Atención']['TOTAL']
     AHT_verticales = table_g3['AHT']['TOTAL']
-    AHT_verticales_str = str(datetime.timedelta(seconds=int(AHT_verticales)))
+    AHT_verticales_str = str(datetime.timedelta(seconds=int(0 if AHT_verticales.__str__()=='nan' else AHT_verticales)))
     NS_gauge_verticales = float(servicio_verticales[0:-1])
     NA_gauge_verticales = float(atencion_verticales[0:-1])
 
@@ -440,14 +440,14 @@ def home(request):
     df2 = df[pandas_query(df, grupo2)]
     df3 = df[pandas_query(df, grupo3)]
 
-    NS_stts_hora = df1['Llamadas Atendidas'].resample('1h').sum() * 100 / df1['Llamadas Recibidas'].resample('1h').sum()
-    NA_stts_hora = df1['LLamadas Umbral'].resample('1h').sum() * 100 / df1['Llamadas Recibidas'].resample('1h').sum()
+    NA_stts_hora = df1['Llamadas Atendidas'].resample('1h').sum() * 100 / df1['Llamadas Recibidas'].resample('1h').sum()
+    NS_stts_hora = df1['LLamadas Umbral'].resample('1h').sum() * 100 / df1['Llamadas Recibidas'].resample('1h').sum()
 
-    NS_fibra_hora = df2['Llamadas Atendidas'].resample('1h').sum() * 100 / df2['Llamadas Recibidas'].resample('1h').sum()
-    NA_fibra_hora = df2['LLamadas Umbral'].resample('1h').sum() * 100 / df2['Llamadas Recibidas'].resample('1h').sum()
+    NA_fibra_hora = df2['Llamadas Atendidas'].resample('1h').sum() * 100 / df2['Llamadas Recibidas'].resample('1h').sum()
+    NS_fibra_hora = df2['LLamadas Umbral'].resample('1h').sum() * 100 / df2['Llamadas Recibidas'].resample('1h').sum()
 
-    NS_verticales_hora = df3['Llamadas Atendidas'].resample('1h').sum() * 100 / df3['Llamadas Recibidas'].resample('1h').sum()
-    NA_verticales_hora = df3['LLamadas Umbral'].resample('1h').sum() * 100 / df3['Llamadas Recibidas'].resample('1h').sum()
+    NA_verticales_hora = df3['Llamadas Atendidas'].resample('1h').sum() * 100 / df3['Llamadas Recibidas'].resample('1h').sum()
+    NS_verticales_hora = df3['LLamadas Umbral'].resample('1h').sum() * 100 / df3['Llamadas Recibidas'].resample('1h').sum()
 
     verticales_dashboard = generate_dashboard(df3, NS_verticales_hora, NA_verticales_hora, NS_gauge_verticales,
                                     NA_gauge_verticales, AHT_verticales, AHT_verticales_str, table_g3)
