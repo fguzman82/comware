@@ -216,6 +216,7 @@ def generate_dashboard(df, NS_hora, NA_hora, NS_gauge, NA_gauge, AHT, AHT_str, t
         text=[str(table_g['Ofrecidas']['TOTAL']), str(table_g['Total Abandonadas']['TOTAL']), str(table_g['Atendidas']['TOTAL']),
               str(table_g['Umbral']['TOTAL'])],
         textfont={'size': 15},
+        showlegend=False,
         xaxis='x',
         yaxis='y',
         # connector = {"mode":"between", "line":{"width":4, "color":"rgb(0, 0, 0)", "dash":"solid"}}
@@ -235,6 +236,7 @@ def generate_dashboard(df, NS_hora, NA_hora, NS_gauge, NA_gauge, AHT, AHT_str, t
             text=llamadas_umbral,
             textposition='inside',
             name='Dentro de Umbral',
+            hovertemplate='Dentro Umbral' + ' %{x}' + '<br>%{y} llamadas<extra></extra></br>',
             marker_color='rgb(26, 118, 255)',
             xaxis="x2",
             yaxis="y2",
@@ -249,6 +251,7 @@ def generate_dashboard(df, NS_hora, NA_hora, NS_gauge, NA_gauge, AHT, AHT_str, t
             text=llamadas_atendidas - llamadas_umbral,
             textposition='inside',
             name='Después de Umbral',
+            hovertemplate='Después Umbral' + ' %{x}' + '<br>%{y} llamadas<extra></extra></br>',
             marker_color='rgb(55, 83, 109)',
             xaxis="x2",
             yaxis="y2",
@@ -263,6 +266,7 @@ def generate_dashboard(df, NS_hora, NA_hora, NS_gauge, NA_gauge, AHT, AHT_str, t
             text=llamadas_recibidas - llamadas_atendidas,
             textposition='inside',
             name='Abandonadas',
+            hovertemplate='Abandonadas' + ' %{x}' + '<br>%{y} llamadas<extra></extra></br>',
             marker_color='lightgrey',
             xaxis="x2",
             yaxis="y2",
@@ -278,10 +282,11 @@ def generate_dashboard(df, NS_hora, NA_hora, NS_gauge, NA_gauge, AHT, AHT_str, t
             text=llamadas_recibidas,
             textposition='top center',
             name='Ofrecidas',
-            # marker_color='blue',
+            hovertemplate='Ofrecidas' + ' %{x}' + '<br>%{y} llamadas<extra></extra></br>',
             marker=dict(
-                color='Blue',
-                size=10,
+                color='blue',
+                size=11,
+                symbol='circle',
             ),
             xaxis="x2",
             yaxis="y2",
@@ -299,6 +304,7 @@ def generate_dashboard(df, NS_hora, NA_hora, NS_gauge, NA_gauge, AHT, AHT_str, t
             #textposition='top center',
             name='Nivel de Servicio (%)',
             marker_color='green',
+            marker_size=8,
             xaxis="x2",
             yaxis="y3",
             line=dict(width=4,
@@ -319,6 +325,7 @@ def generate_dashboard(df, NS_hora, NA_hora, NS_gauge, NA_gauge, AHT, AHT_str, t
             #textposition='bottom center',
             name='Nivel de Atención (%)',
             marker_color='#195695',
+            marker_size=8,
             xaxis="x2",
             yaxis="y3",
             line=dict(width=4,
@@ -362,9 +369,9 @@ def generate_dashboard(df, NS_hora, NA_hora, NS_gauge, NA_gauge, AHT, AHT_str, t
 
         legend=dict(
             x=0.01,
-            y=0.5,
-            bgcolor='rgba(128, 100, 0, 0)',
-            bordercolor='rgba(255, 255, 255, 0)'
+            y=0.4,
+            bgcolor='rgba(229, 236, 246, 0.8)',
+            #bordercolor='rgba(255, 255, 255, 0)'
         ),
         barmode='stack',
         bargap=0.15,  # gap between bars of adjacent location coordinates.
@@ -387,7 +394,7 @@ def home(request):
     grupo3 = ['B2B N1 Bajos', 'B2B N1 Edatel Avanz', 'B2B N1 Edatel Basico', 'B2B N1 Medios Conect',
               'B2B N1 Medios Datace', 'B2B N1 Medios Voz', 'B2B N1 VIP']
 
-    df = read_table('tabla_12am.txt')
+    df = read_table('tabla.txt')
     global end_date
     end_date = df.index[-1]
 
