@@ -20,7 +20,7 @@ kiwisolver==1.1.0
 more-itertools==7.2.0
 nbformat==4.4.0
 numpy==1.17.2
-openpyxl==3.0.0
+openpyxl==2.6.4
 pandas==0.25.1
 parso==0.5.1
 patsy==0.5.1
