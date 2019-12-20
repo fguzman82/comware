@@ -21,8 +21,10 @@ ENV LD_LIBRARY_PATH=/usr/local/lib
 ENV ALLOWED_HOSTS=127.0.0.1
 
 ENTRYPOINT ["/usr/local/bin/python", "manage.py", "migrate","--noinput"]
-ENTRYPOINT [ "/usr/local/bin/gunicorn", "comware.wsgi:application",  "--workers 4",  "--bind=localhost:8888"]
-#ENTRYPOINT [ "/usr/local/bin/gunicorn", "--help"]
+ENTRYPOINT [ "/usr/local/bin/gunicorn", "comware.wsgi:application",  "--workers=5",  "--bind=localhost:8888"]
+
+
+
 #FROM python:3.5-jessie
 #ENV PYTHONUNBUFFERED 1
 #ENV ALLOWED_HOSTS=127.0.0.1
